@@ -47,9 +47,9 @@ public class JRubyLanguageDefinition extends BaseLanguage<ScriptingContainer, JR
     @Override
     protected void exec(EventContainer<JRubyScriptContext> ctx, ScriptTrigger macro, BaseEvent event) throws Exception {
         runInstance(ctx, instance -> {
-            instance.put("event", event);
-            instance.put("file", ctx.getCtx().getFile());
-            instance.put("context", ctx);
+            instance.put("$event", event);
+            instance.put("$file", ctx.getCtx().getFile());
+            instance.put("$context", ctx);
 
             instance.runScriptlet(new FileReader(ctx.getCtx().getFile()), ctx.getCtx().getFile().getAbsolutePath());
         }, ctx.getCtx().getFile().getParentFile().toPath());
@@ -59,9 +59,9 @@ public class JRubyLanguageDefinition extends BaseLanguage<ScriptingContainer, JR
     @Override
     protected void exec(EventContainer<JRubyScriptContext> ctx, String lang, String script, BaseEvent event) throws Exception {
         runInstance(ctx, instance -> {
-            instance.put("event", event);
-            instance.put("file", ctx.getCtx().getFile());
-            instance.put("context", ctx);
+            instance.put("$event", event);
+            instance.put("$file", ctx.getCtx().getFile());
+            instance.put("$context", ctx);
 
             if (ctx.getCtx().getFile() != null) {
                 instance.runScriptlet(new StringReader(script), ctx.getCtx().getFile().getAbsolutePath());
