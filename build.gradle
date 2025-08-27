@@ -31,7 +31,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:2.0.0-alpha7'
     implementation 'javassist:javassist:3.12.1.GA'
     implementation 'fastutil:fastutil:5.0.9'
-    implementation "com.github.jsmacros.jsmacros:jsmacros-1.19:${project.jsmacros_version}"
+    implementation "com.github.therealevvv:jsmacrostorage:1.21.8"
 
     implementation "org.jruby:jruby-complete:9.4.5.0"
     jsmacrosExtensionInclude "org.jruby:jruby-complete:9.4.5.0"
