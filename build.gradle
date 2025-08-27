@@ -3,8 +3,8 @@ plugins {
     id 'java'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.property("version")
@@ -50,17 +50,17 @@ processResources {
 
 compileJava {
     options.encoding = "UTF-8"
-    def targetVersion = 8
+    def targetVersion = 21
     if (JavaVersion.current().isJava9Compatible()) {
         it.options.release = targetVersion
     }
 }
 
 compileTestJava {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 
-    options.release.set(17)
+    options.release.set(21)
 }
 
 
