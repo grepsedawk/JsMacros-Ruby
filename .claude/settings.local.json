@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.github.com)",
+      "Bash(git log:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(./gradlew:*)",
+      "Bash(gh auth:*)",
+      "Read(/Users/alex/Code/jsmacrostorage/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
