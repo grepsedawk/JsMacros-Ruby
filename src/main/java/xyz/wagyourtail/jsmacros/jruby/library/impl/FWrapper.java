@@ -58,7 +58,7 @@ public class FWrapper extends PerExecLanguageLibrary<ScriptingContainer, JRubySc
             }
 
             Semaphore lock = new Semaphore(0);
-            boolean joinedThread = Core.getInstance().profile.checkJoinedThreadStack();
+            boolean joinedThread = ctx.runner.profile.checkJoinedThreadStack();
 
             Thread t = new Thread(() -> {
                 ctx.bindThread(Thread.currentThread());
@@ -69,10 +69,10 @@ public class FWrapper extends PerExecLanguageLibrary<ScriptingContainer, JRubySc
                     IRubyObject[] rubyObjects = JavaUtil.convertJavaArrayToRuby(threadContext.runtime, params);
                     fn.call(threadContext, rubyObjects, threadContext.getFrameBlock()).toJava(Object.class);
                 } catch (Throwable ex) {
-                    Core.getInstance().profile.logError(ex);
+                    ctx.runner.profile.logError(ex);
                 } finally {
                     ctx.unbindThread(Thread.currentThread());
-                    Core.getInstance().profile.joinedThreadStack.remove(Thread.currentThread());
+                    ctx.runner.profile.joinedThreadStack.remove(Thread.currentThread());
 
                     ctx.releaseBoundEventIfPresent(Thread.currentThread());
 
@@ -92,8 +92,8 @@ public class FWrapper extends PerExecLanguageLibrary<ScriptingContainer, JRubySc
 
             try {
                 ctx.bindThread(Thread.currentThread());
-                if (Core.getInstance().profile.checkJoinedThreadStack()) {
-                    Core.getInstance().profile.joinedThreadStack.add(Thread.currentThread());
+                if (ctx.runner.profile.checkJoinedThreadStack()) {
+                    ctx.runner.profile.joinedThreadStack.add(Thread.currentThread());
                 }
                 ThreadContext threadContext = ctx.getContext().getProvider().getRuntime().getCurrentContext();
                 threadContext.pushNewScope(threadContext.getCurrentStaticScope());
@@ -104,7 +104,7 @@ public class FWrapper extends PerExecLanguageLibrary<ScriptingContainer, JRubySc
             } finally {
                 ctx.releaseBoundEventIfPresent(Thread.currentThread());
                 ctx.unbindThread(Thread.currentThread());
-                Core.getInstance().profile.joinedThreadStack.remove(Thread.currentThread());
+                ctx.runner.profile.joinedThreadStack.remove(Thread.currentThread());
             }
         }
 

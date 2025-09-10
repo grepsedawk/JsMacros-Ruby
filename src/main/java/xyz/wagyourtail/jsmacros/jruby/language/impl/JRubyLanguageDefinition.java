@@ -73,7 +73,7 @@ public class JRubyLanguageDefinition extends BaseLanguage<ScriptingContainer, JR
 
     @Override
     public JRubyScriptContext createContext(BaseEvent event, File path) {
-        return new JRubyScriptContext(event, path);
+        return new JRubyScriptContext(runner, event, path);
     }
 
     private interface Executor {

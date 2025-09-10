@@ -9,7 +9,7 @@ import org.jruby.exceptions.RaiseException;
 import org.jruby.runtime.backtrace.RubyStackTraceElement;
 import org.jruby.runtime.builtin.IRubyObject;
 import xyz.wagyourtail.jsmacros.core.Core;
-import xyz.wagyourtail.jsmacros.core.extensions.Extension;
+import xyz.wagyourtail.jsmacros.core.extensions.LanguageExtension;
 import xyz.wagyourtail.jsmacros.core.language.BaseLanguage;
 import xyz.wagyourtail.jsmacros.core.language.BaseWrappedException;
 import xyz.wagyourtail.jsmacros.core.library.BaseLibrary;
@@ -21,46 +21,42 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
-public class JRubyExtension implements Extension {
+public class JRubyExtension implements LanguageExtension {
 
     JRubyLanguageDefinition languageDescription;
 
     @Override
-    public void init() {
-    
-//        try {
-//            JsMacros.core.config.addOptions("ruby", RubyConfig.class);
-//        } catch (IllegalAccessException | InstantiationException e) {
-//            throw new RuntimeException(e);
-//        }
+    public String getExtensionName() {
+        return "ruby";
+    }
 
-        Thread t = new Thread(() -> {
+    @Override
+    public void init(Core<?, ?> core) {
+        try {
+            // Initialize JRuby synchronously to ensure it's available
             ScriptingContainer instance = new ScriptingContainer();
-            instance.runScriptlet("p \"Ruby Pre-Loaded\"");
-        });
-        t.start();
+            instance.runScriptlet("puts \"Ruby Extension Initialized\"");
+            
+            System.out.println("[JsMacros-Ruby] Extension initialized successfully");
+        } catch (Exception e) {
+            System.err.println("[JsMacros-Ruby] Failed to initialize JRuby: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("JRuby initialization failed", e);
+        }
     }
 
     @Override
     public int getPriority() {
-        return 0;
+        return 1000; // High priority to ensure we handle .rb files
     }
 
-    @Override
-    public String getLanguageImplName() {
-        return "jruby";
-    }
 
     @Override
-    public ExtMatch extensionMatch(File file) {
+    public LanguageExtension.ExtMatch extensionMatch(File file) {
         if (file.getName().endsWith(".rb")) {
-            if (file.getName().contains(getLanguageImplName())) {
-                return ExtMatch.MATCH_WITH_NAME;
-            } else {
-                return ExtMatch.MATCH;
-            }
+            return LanguageExtension.ExtMatch.MATCH;
         }
-        return ExtMatch.NOT_MATCH;
+        return LanguageExtension.ExtMatch.NOT_MATCH;
     }
 
     @Override
@@ -79,11 +75,7 @@ public class JRubyExtension implements Extension {
         return languageDescription;
     }
 
-    @Override
-    public Set<Class<? extends BaseLibrary>> getLibraries() {
-        return Sets.newHashSet(FWrapper.class);
-    }
-
+    
 
     @Override
     public BaseWrappedException<?> wrapException(Throwable ex) {

@@ -1,14 +1,15 @@
 package xyz.wagyourtail.jsmacros.jruby.language.impl;
 
 import org.jruby.embed.ScriptingContainer;
+import xyz.wagyourtail.jsmacros.core.Core;
 import xyz.wagyourtail.jsmacros.core.event.BaseEvent;
 import xyz.wagyourtail.jsmacros.core.language.BaseScriptContext;
 
 import java.io.File;
 
 public class JRubyScriptContext extends BaseScriptContext<ScriptingContainer> {
-    public JRubyScriptContext(BaseEvent event, File file) {
-        super(event, file);
+    public JRubyScriptContext(Core<?, ?> core, BaseEvent event, File file) {
+        super(core, event, file);
     }
 
     @Override

@@ -3,8 +3,8 @@ plugins {
     id 'java'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.property("version")
@@ -31,7 +31,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:2.0.0-alpha7'
     implementation 'javassist:javassist:3.12.1.GA'
     implementation 'fastutil:fastutil:5.0.9'
-    implementation "com.github.jsmacros.jsmacros:jsmacros-1.19:${project.jsmacros_version}"
+    implementation files('libs/jsmacros-1.21.8-2.0.0-fabric.jar')
 
     implementation "org.jruby:jruby-complete:9.4.5.0"
     jsmacrosExtensionInclude "org.jruby:jruby-complete:9.4.5.0"
@@ -43,28 +43,29 @@ dependencies {
 }
 
 processResources {
-    filesMatching("jsmacros.ext.jruby.json") {
-        expand "dependencies": configurations.jsmacrosExtensionInclude.files.collect { it.name }.join(" ")
+    filesMatching("jsmacros.ext.ruby.json") {
+        expand "dependencies": configurations.jsmacrosExtensionInclude.files.collect { '"META-INF/jsmacrosdeps/' + it.name + '"' }.join(", ")
     }
 }
 
 compileJava {
     options.encoding = "UTF-8"
-    def targetVersion = 8
+    def targetVersion = 21
     if (JavaVersion.current().isJava9Compatible()) {
         it.options.release = targetVersion
     }
 }
 
 compileTestJava {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 
-    options.release.set(17)
+    options.release.set(21)
 }
 
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from "LICENSE"
     from (configurations.jsmacrosExtensionInclude.files) {
         include '*'
