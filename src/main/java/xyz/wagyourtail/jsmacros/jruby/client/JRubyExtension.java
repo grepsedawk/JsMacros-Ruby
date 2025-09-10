@@ -10,6 +10,7 @@ import org.jruby.runtime.backtrace.RubyStackTraceElement;
 import org.jruby.runtime.builtin.IRubyObject;
 import xyz.wagyourtail.jsmacros.core.Core;
 import xyz.wagyourtail.jsmacros.core.extensions.LanguageExtension;
+import xyz.wagyourtail.jsmacros.core.extensions.LibraryExtension;
 import xyz.wagyourtail.jsmacros.core.language.BaseLanguage;
 import xyz.wagyourtail.jsmacros.core.language.BaseWrappedException;
 import xyz.wagyourtail.jsmacros.core.library.BaseLibrary;
@@ -21,7 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
-public class JRubyExtension implements LanguageExtension {
+public class JRubyExtension implements LanguageExtension, LibraryExtension {
 
     JRubyLanguageDefinition languageDescription;
 
@@ -103,6 +104,11 @@ public class JRubyExtension implements LanguageExtension {
             loc = new BaseWrappedException.HostLocation(current.getClassName() + " " + current.getLineNumber());
         }
         return new BaseWrappedException<>(current, current.getMethodName(), loc, elements.hasNext() ? traceStack(elements.next(), elements) : null);
+    }
+
+    @Override
+    public Set<Class<? extends BaseLibrary>> getLibraries() {
+        return Set.of(FWrapper.class);
     }
 
     @Override
